@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính toán thùng carton</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .menu button {
+            padding: 10px 20px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .menu button:hover {
+            background: #0056b3;
+        }
+
+        .section {
+            display: none;
+        }
+
+        #tinhGia {
+            display: block;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+        }
+
+        input, select {
+            padding: 5px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #218838;
+        }
+
+        p {
+            font-weight: bold;
+            color: #333;
+        }
+        .additional-layer {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tính toán thùng carton</h1>
+        <div class="menu">
+            <button onclick="showSection('tinhGia')">Tính Giá Thùng</button>
+            <button onclick="showSection('tinhKhoiLuong')">Tính Khối Lượng Thùng</button>
+            <button onclick="showSection('tinhSoKhoi')">Tính Số Khối Thùng</button>
+        </div>
+
+        <div id="tinhGia" class="section">
+            <h2>Tính Giá Thùng Carton</h2>
+            <form id="giaThungForm">
+                <label for="loaiThung">Chọn loại thùng:</label>
+                <select id="loaiThung" name="loaiThung" required>
+                    <option value="A1">Thùng A1</option>
+                    <option value="napChong">Thùng nắp chồng</option>
+                    <option value="amDuongGo">Thùng âm dương gỗ</option>
+                    <option value="amDuongHop">Hộp âm dương</option>
+                    <option value="bem">Hộp nắp gài dạng BEM</option>
+                    <option value="napDay2Dau">Hộp nắp đậy 2 đầu</option>
+                    <option value="napDayDitGai">Hộp nắp đậy đít gài</option>
+                </select><br>
+                <label for="d">Chiều dài (cm):</label>
+                <input type="number" id="d" name="d" required><br>
+                <label for="r">Chiều rộng (cm):</label>
+                <input type="number" id="r" name="r" required><br>
+                <label for="c">Chiều cao (cm):</label>
+                <input type="number" id="c" name="c" required><br>
+                <label for="m">Giá m2 (đồng/m2):</label>
+                <input type="number" id="m" name="m" required><br>
+                <label for="coBeLo">Có bế lỗ:</label>
+                <input type="checkbox" id="coBeLo" name="coBeLo"><br>
+                <button type="button" onclick="tinhGiaThung()">Tính Giá</button>
+            </form>
+            <p id="giaThungResult"></p>
+        </div>
+
+        <div id="tinhKhoiLuong" class="section">
+            <h2>Tính Khối Lượng Thùng Carton</h2>
+            <form id="khoiLuongThungForm">
+                <label for="soLop">Chọn số lớp:</label>
+                <select id="soLop" name="soLop" required onchange="updateLayerInputs()">
+                    <option value="3">3 lớp</option>
+                    <option value="5">5 lớp</option>
+                    <option value="7">7 lớp</option>
+                </select><br>
+                <label for="dKL">Chiều dài (cm):</label>
+                <input type="number" id="dKL" name="d" required><br>
+                <label for="rKL">Chiều rộng (cm):</label>
+                <input type="number" id="rKL" name="r" required><br>
+                <label for="cKL">Chiều cao (cm):</label>
+                <input type="number" id="cKL" name="c" required><br>
+                <label for="X">Trọng lượng lớp 1 (gram):</label>
+                <input type="number" id="X" name="X" required><br>
+                <label for="Y">Trọng lượng lớp 2 (gram):</label>
+                <input type="number" id="Y" name="Y" required><br>
+                <label for="Z">Trọng lượng lớp 3 (gram):</label>
+                <input type="number" id="Z" name="Z" required><br>
+                <!-- <div id="lop5" class="additional-layer"> -->
+                    <label for="O">Trọng lượng lớp 4 (gram):</label>
+                    <input type="number" id="O" name="O" required><br>
+                    <label for="I">Trọng lượng lớp 5 (gram):</label>
+                    <input type="number" id="I" name="I" required><br>
+                <!-- </div> -->
+                <!-- <div id="lop7" class="additional-layer"> -->
+                    <label for="P">Trọng lượng lớp 6 (gram):</label>
+                    <input type="number" id="P" name="P" required><br>
+                    <label for="I2">Trọng lượng lớp 7 (gram):</label>
+                    <input type="number" id="I2" name="I2" required><br>
+                <!-- </div> -->
+                <label for="nKL">Số lượng thùng:</label>
+                <input type="number" id="nKL" name="n" required><br>
+                <button type="button" onclick="tinhKhoiLuongThung()">Tính Khối Lượng</button>
+            </form>
+            <p id="khoiLuongThungResult"></p>
+        </div>
+
+        <div id="tinhSoKhoi" class="section">
+            <h2>Tính Số Khối Thùng Carton</h2>
+            <form id="soKhoiThungForm">
+                <label for="dSK">Chiều dài (cm):</label>
+                <input type="number" id="dSK" name="d" required><br>
+                <label for="rSK">Chiều rộng (cm):</label>
+                <input type="number" id="rSK" name="r" required><br>
+                <label for="cSK">Chiều cao (cm):</label>
+                <input type="number" id="cSK" name="c" required><br>
+                <label for="nSK">Số lượng thùng:</label>
+                <input type="number" id="nSK" name="n" required><br>
+                <label for="loaiSsong">Chọn loại thùng:</label>
+                <select id="loaiSsong" name="loaiSsong" required>
+                    <option value="E">3 lớp sóng E</option>
+                    <option value="B">3 lớp sóng B</option>
+                    <option value="C">3 lớp sóng C</option>
+                    <option value="BE">5 lớp sóng BE</option>
+                    <option value="BC">5 lớp sóng BC</option>
+                    <option value="7">7 lớp</option>
+                </select><br>
+                <button type="button" onclick="tinhSoKhoiThung()">Tính Số Khối</button>
+            </form>
+            <p id="soKhoiThungResult"></p>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function updateLayerInputs() {
+            const soLop = document.getElementById('soLop').value;
+            document.getElementById('lop5').style.display = (soLop >= 5) ? 'block' : 'none';
+            document.getElementById('lop7').style.display = (soLop == 7) ? 'block' : 'none';
+        }
+
+        function tinhGiaThung() {
+            const loaiThung = document.getElementById('loaiThung').value;
+            const d = parseFloat(document.getElementById('d').value);
+            const r = parseFloat(document.getElementById('r').value);
+            const c = parseFloat(document.getElementById('c').value);
+            const m = parseFloat(document.getElementById('m').value);
+            const coBeLo = document.getElementById('coBeLo').checked;
+
+            let giaThung;
+            if (loaiThung === "A1") {
+                giaThung = ((d + r + c) * 2) * m * 1.1 / 1000000;
+            } else if (loaiThung === "napChong") {
+                giaThung = ((d + r + c) * 2) * m * 1.05 / 1000000;
+            } else if (loaiThung === "amDuongGo") {
+                giaThung = ((d + r + c) * 2) * m * 1.15 / 1000000;
+            } else if (loaiThung === "amDuongHop") {
+                giaThung = ((d + r + c) * 2) * m * 1.12 / 1000000;
+            } else if (loaiThung === "bem") {
+                giaThung = ((d + r + c) * 2) * m * 1.08 / 1000000;
+            } else if (loaiThung === "napDay2Dau") {
+                giaThung = ((d + r + c) * 2) * m * 1.07 / 1000000;
+            } else if (loaiThung === "napDayDitGai") {
+                giaThung = ((d + r + c) * 2) * m * 1.09 / 1000000;
+            }
+
+            if (coBeLo) {
+                giaThung += 500;
+            }
+
+            document.getElementById('giaThungResult').innerText = `Giá thùng: ${giaThung.toFixed(0)} đồng.`;
+        }
+
+        function tinhKhoiLuongThung() {
+            const soLop = document.getElementById('soLop').value;
+            const d = parseFloat(document.getElementById('dKL').value);
+            const r = parseFloat(document.getElementById('rKL').value);
+            const c = parseFloat(document.getElementById('cKL').value);
+            const X = parseFloat(document.getElementById('X').value);
+            const Y = parseFloat(document.getElementById('Y').value);
+            const Z = parseFloat(document.getElementById('Z').value);
+            const n = parseFloat(document.getElementById('nKL').value);
+            
+            const A = (d + r) * 2 + 3;
+            const B = r + c;
+            let KLuong = (A * B / 10000) * (X + Y * 1.5 + Z);
+
+            if (soLop >= 5) {
+                const O = parseFloat(document.getElementById('O').value);
+                const I = parseFloat(document.getElementById('I').value);
+                KLuong += (A * B / 10000) * (O * 1.5 + I);
+            }
+
+            if (soLop == 7) {
+                const P = parseFloat(document.getElementById('P').value);
+                const I2 = parseFloat(document.getElementById('I2').value);
+                KLuong += (A * B / 10000) * (P * 1.5 + I2);
+            }
+
+            KLuong = KLuong * n;
+
+            document.getElementById('khoiLuongThungResult').innerText = `Khối lượng thùng: ${KLuong.toFixed(0)} gram.`;
+        }
+
+        function tinhSoKhoiThung() {
+            const d = parseFloat(document.getElementById('dSK').value);
+            const r = parseFloat(document.getElementById('rSK').value);
+            const c = parseFloat(document.getElementById('cSK').value);
+            const n = parseFloat(document.getElementById('nSK').value);
+            const loaiSsong = document.getElementById('loaiSsong').value;
+
+            let soKhoi = (d * r * c * n) / 1000000;
+
+            if (loaiSsong === "E") {
+                soKhoi *= 1;
+            } else if (loaiSsong === "B") {
+                soKhoi *= 1.2;
+            } else if (loaiSsong === "C") {
+                soKhoi *= 1.1;
+            } else if (loaiSsong === "BE") {
+                soKhoi *= 1.3;
+            } else if (loaiSsong === "BC") {
+                soKhoi *= 1.4;
+            } else if (loaiSsong === "7") {
+                soKhoi *= 1.5;
+            }
+
+            document.getElementById('soKhoiThungResult').innerText = `Số khối thùng: ${soKhoi.toFixed(3)} m³.`;
+        }
+    </script>
+</body>
+</html>
